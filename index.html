@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1f4e79">
+<title>オークラヤ住宅｜買取再販 利益シミュレーター</title>
+<style>
+:root{
+  --brand:#1f4e79;
+  --brand-dark:#173d60;
+  --brand-light:#edf4fa;
+  --accent:#7fa9cf;
+  --line:#d8e4ef;
+  --text:#203246;
+  --muted:#6d7c8c;
+  --bg:#f4f7fa;
+  --card:#ffffff;
+  --good:#0b7a53;
+  --bad:#b44343;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);margin:0}
+body{padding:12px 10px 28px}
+.wrap{max-width:820px;margin:0 auto}
+.sheet{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 26px rgba(20,54,89,.08);padding:16px 18px}
+.header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:2px solid #e3edf6;padding-bottom:10px}
+.brand{display:flex;align-items:flex-start;gap:10px}
+.logo-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#2c6aa0);position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.logo-mark:before{content:"";position:absolute;left:9px;right:9px;top:16px;height:14px;background:#fff;border-radius:2px 2px 4px 4px}
+.logo-mark:after{content:"";position:absolute;left:8px;right:8px;top:8px;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:10px solid #fff;width:0;height:0;margin:auto}
+.brand-text .mini{font-size:10px;font-weight:800;letter-spacing:.08em;color:#557490}
+.brand-text .name{font-size:18px;font-weight:900;color:var(--brand-dark);margin-top:2px}
+.brand-text .sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.45}
+.version{white-space:nowrap;background:var(--brand-light);border:1px solid #d8e7f4;color:var(--brand);padding:6px 10px;border-radius:999px;font-size:10px;font-weight:800}
+.meta{display:grid;grid-template-columns:2fr 1fr;gap:9px 12px;margin-top:12px}
+.meta-box{border:1px solid #e2ebf3;border-radius:10px;padding:8px 10px;background:#fbfdff}
+.meta-box label{display:block;font-size:11px;font-weight:800;color:#4f6881;margin-bottom:4px}
+.meta-box input{width:100%;border:1px solid #cad8e5;border-radius:8px;padding:9px 10px;font-size:14px;color:var(--text);background:#fff}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-top:13px}
+.section{min-width:0}
+.section h2{margin:0 0 8px;display:flex;align-items:center;gap:6px;font-size:12px}
+.step{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:20px;padding:0 7px;border-radius:999px;background:var(--brand);color:#fff;font-size:10px;font-weight:800}
+.control{margin-bottom:9px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:30px}
+.row label,.field-title{font-size:12px;font-weight:800}
+.edit{display:flex;align-items:center;gap:5px;font-size:11px;color:#52657c;white-space:nowrap}
+.edit input{width:94px;border:1px solid #c9d7e5;border-radius:7px;padding:6px 7px;text-align:right;font-size:14px;font-weight:800;color:var(--brand-dark);background:#fff}
+.edit.small input{width:84px}
+.edit input:focus,.meta-box input:focus{outline:2px solid #8db4d7;outline-offset:0}
+.track{width:100%;height:14px;accent-color:var(--brand);margin-top:3px;cursor:pointer;touch-action:pan-y}
+.scale{display:flex;justify-content:space-between;font-size:9px;color:#92a0af;margin-top:1px}
+.info{font-size:10px;color:#748396;line-height:1.45}
+.line{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #ebf0f5;padding:7px 0;font-size:11px}
+.line strong{font-size:13px;color:var(--brand-dark)}
+.tabs{display:flex;background:#eaf1f7;border-radius:8px;padding:3px;gap:3px;margin-bottom:8px}
+.tabs button{flex:1;border:0;background:transparent;border-radius:6px;padding:7px 4px;font-size:11px;font-weight:800;color:#60758a;cursor:pointer}
+.tabs button.active{background:#fff;color:var(--brand-dark);box-shadow:0 1px 4px rgba(20,54,89,.12)}
+.hide{display:none !important}
+.check{display:flex;align-items:center;gap:6px;font-size:10px;color:#5d7187;margin:6px 0 4px}
+.check input{accent-color:var(--brand)}
+.hero{margin-top:10px;border:1px solid #d4e2ef;border-radius:14px;background:linear-gradient(180deg,#f3f8fc,#eef5fb);padding:12px 14px}
+.hero .small{font-size:11px;color:#55708a;font-weight:800}
+.hero .big{font-size:clamp(28px,5vw,38px);line-height:1.1;font-weight:900;letter-spacing:-.04em;color:var(--brand-dark);margin-top:4px}
+.hero .note{font-size:10px;color:#72859a;margin-top:4px}
+ .scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+ .scenario{border:1px solid #d9e5ef;border-radius:12px;padding:10px 12px;min-width:0;background:#fff}
+ .scenario.upside{border-color:#b9d8e8;background:#f5fafc}
+ .scenario h3{font-size:12px;margin:0 0 3px;color:#19466c}
+ .scenario .hint{font-size:9px;color:#76889a;line-height:1.35;margin-bottom:5px}
+ .scenario .row label{font-size:11px}
+ .scenario .edit input{width:100px}
+ .scenario-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:7px}
+ .metric{background:#f2f6fa;border-radius:7px;padding:7px;min-width:0}
+ .metric .key{font-size:9px;color:#6a7e92}
+ .metric .value{font-size:15px;font-weight:850;margin-top:2px;overflow-wrap:anywhere}
+ .scenario.upside .metric{background:#e9f3f7}
+ .scenario .foot{font-size:10px;font-weight:750;color:#385a76;margin-top:7px}
+ .summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.tile{border:1px solid #e3eaf1;border-radius:10px;padding:9px 10px;background:#fff}
+.tile .key{font-size:10px;color:#6a7e92}
+.tile .value{font-size:17px;font-weight:900;margin-top:4px;overflow-wrap:anywhere}
+.green{color:var(--good)}
+.red{color:var(--bad)}
+.detail{display:grid;grid-template-columns:repeat(2,1fr);gap:2px 18px;border-top:1px solid #e3eaf1;margin-top:11px;padding-top:8px}
+.detail .line{padding:4px 0;border:0}
+.detail .line strong{font-size:11px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.actions button{border:0;border-radius:8px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer}
+.actions .main{background:var(--brand);color:#fff}
+.actions .sub{background:#eaf1f7;color:#335875}
+.notice{margin-top:10px;font-size:9px;color:#7a8898;line-height:1.55}
+.warn{min-height:12px;margin-top:4px;color:#a35828;font-size:10px}
+.print-only{display:none}
+
+@media (max-width:600px){
+  .sheet{padding:14px}
+  .meta,.fields{grid-template-columns:1fr;gap:10px}
+  .edit input{width:88px;font-size:13px}
+  .edit.small input{width:76px}
+  .summary{grid-template-columns:1fr 1fr}
+  .tile{padding:8px}
+  .tile .value{font-size:15px}
+  .brand-text .name{font-size:16px}
+  .hero .big{font-size:30px}
+  .scenario-grid{grid-template-columns:1fr}
+  .scenario .edit input{width:110px}
+}
+@page{size:A4 portrait;margin:8mm}
+@media print{
+  html,body{background:#fff!important;margin:0!important;padding:0!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .wrap{max-width:none}
+  .sheet{border:none;box-shadow:none;border-radius:0;padding:0}
+  .header{padding-bottom:6px}
+  .fields{gap:2.5mm 8mm;margin-top:3mm}
+  .meta{margin-top:3mm;gap:2.5mm 5mm}
+  .track,.scale,.actions,.notice,.warn,.version,.brand-text .sub{display:none!important}
+  .meta-box,.tile,.hero,.scenario{break-inside:avoid}
+  .meta-box input{border:0;border-bottom:1px solid #bccbd8;border-radius:0;padding:1mm 0}
+  .control{margin-bottom:1.5mm}
+  .line{padding:1.5mm 0}
+  .hero{padding:3mm;margin-top:3mm}
+  .hero .big{font-size:28px}
+  .summary{margin-top:2.5mm}
+  .scenario-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:3mm;margin-top:2mm}
+  .scenario{padding:2mm 2.5mm}
+  .scenario .hint{display:none}
+  .scenario .row{min-height:5mm}
+  .scenario .edit input{border:0;border-bottom:1px solid #becddd;border-radius:0;padding:1mm;width:26mm}
+  .scenario-metrics{margin-top:1mm}
+  .metric{padding:1.5mm}
+  .metric .value{font-size:12px}
+  .scenario .foot{margin-top:1mm}
+  .tile{padding:2mm}
+  .detail{margin-top:3mm;padding-top:1.5mm}
+  .print-only{display:block;font-size:9px;color:#6f7e8d;margin-top:2mm}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="sheet">
+    <header class="header">
+      <div class="brand">
+        <div class="logo-mark" aria-hidden="true"></div>
+        <div class="brand-text">
+          <div class="mini">OHKURAYA HOUSING / INTERNAL TOOL</div>
+          <div class="name">オークラヤ住宅　買取再販 利益シミュレーター</div>
+          <div class="sub">仕入れ条件から、目標利益率を確保するための必要再販価格を直感的に試算</div>
+        </div>
+      </div>
+      <div class="version">TSUBO Ver.5</div>
+    </header>
+
+    <section class="meta">
+      <div class="meta-box">
+        <label for="propname">物件名</label>
+        <input id="propname" type="text" placeholder="例：グランドメゾン○○">
+      </div>
+      <div class="meta-box">
+        <label for="room">号室</label>
+        <input id="room" type="text" placeholder="例：503号室">
+      </div>
+    </section>
+
+    <div class="fields">
+      <section class="section">
+        <h2><span class="step">01</span>仕入れ・物件情報</h2>
+        <div class="control">
+          <div class="row"><label for="buy">仕入れ価格</label><div class="edit"><input id="buy" type="number" min="0" max="20000" step="50" value="4500">万円</div></div>
+          <input class="track" id="buy-r" type="range" min="0" max="20000" step="100" value="4500">
+          <div class="scale"><span>0</span><span>2億円</span></div>
+        </div>
+        <div class="control">
+          <div class="row"><label for="area">専有面積</label><div class="edit small"><input id="area" type="number" min="1" max="200" step="0.1" value="50">㎡</div></div>
+          <input class="track" id="area-r" type="range" min="20" max="200" step="1" value="50">
+          <div class="scale"><span>20㎡</span><span>200㎡</span></div>
+          <div class="info">自動換算：<strong id="tsubo"></strong></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2><span class="step">02</span>仕入れ諸費用</h2>
+        <div class="line"><span>仲介手数料（税込・自動計算）</span><strong id="commission"></strong></div>
+        <label class="check"><input type="checkbox" id="manualcheck">仲介手数料を手動調整（直接仕入れ等）</label>
+        <div class="control hide" id="manualbox">
+          <div class="row"><label for="manual">手動仲介手数料</label><div class="edit"><input id="manual" type="number" min="0" max="3000" step="10" value="0">万円</div></div>
+          <input class="track" id="manual-r" type="range" min="0" max="3000" step="10" value="0">
+        </div>
+        <div class="control">
+          <div class="row"><label for="other">その他諸費用</label><div class="edit"><input id="other" type="number" min="0" max="3000" step="10" value="0">万円</div></div>
+          <input class="track" id="other-r" type="range" min="0" max="3000" step="20" value="0">
+          <div class="scale"><span>0</span><span>3,000万円</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2><span class="step">03</span>内装費</h2>
+        <div class="tabs"><button id="full" type="button" class="active">フルリノベ</button><button id="light" type="button">軽内装</button></div>
+        <div class="control" id="fullbox">
+          <div class="row"><label for="unit">リノベ坪単価</label><div class="edit small"><input id="unit" type="number" min="0" max="100" step="0.5" value="54.5">万円/坪</div></div>
+          <input class="track" id="unit-r" type="range" min="10" max="100" step="0.5" value="54.5">
+          <div class="scale"><span>10万円/坪</span><span>100万円/坪</span></div>
+          <div class="info">目安：16.5万円/㎡ ≒ 約54.5万円/坪</div>
+        </div>
+        <div class="control hide" id="lightbox">
+          <div class="row"><label for="lightcost">軽内装費用</label><div class="edit"><input id="lightcost" type="number" min="0" max="500" step="10" value="200">万円</div></div>
+          <input class="track" id="lightcost-r" type="range" min="0" max="500" step="10" value="200">
+          <div class="scale"><span>0</span><span>500万円</span></div>
+        </div>
+        <div class="line"><span>内装費 合計</span><strong id="reno"></strong></div>
+      </section>
+
+      <section class="section">
+        <h2><span class="step">04</span>目標利益率</h2>
+        <div class="control">
+          <div class="row"><label for="target">総原価に対する目標利益率</label><div class="edit small"><input id="target" type="number" min="0" max="40" step="0.5" value="10">％</div></div>
+          <input class="track" id="target-r" type="range" min="0" max="40" step="0.5" value="10">
+          <div class="scale"><span>0%</span><span>40%</span></div>
+        </div>
+        <div class="line"><span>総事業費</span><strong id="total"></strong></div>
+      </section>
+    </div>
+
+    <section class="hero">
+      <div class="small">05　目標利益率から計算した必要再販価格</div>
+      <div class="big" id="required"></div>
+      <div class="note" id="required-note"></div>
+    </section>
+
+    <div class="scenario-grid">
+      <section class="scenario">
+        <h3>05-A　堅実売却価格</h3>
+        <div class="hint">「この価格なら売り切れる」と考える保守的な想定</div>
+        <div class="row"><label for="sell">売却想定</label><div class="edit"><input id="sell" type="number" min="0" max="30000" step="50" value="6028">万円</div></div>
+        <input class="track" id="sell-r" type="range" min="0" max="30000" step="100" value="6028">
+        <div class="scenario-metrics">
+          <div class="metric"><div class="key">利益額</div><div class="value" id="profit"></div></div>
+          <div class="metric"><div class="key">利益率</div><div class="value" id="margin"></div></div>
+        </div>
+        <div class="foot">再販坪単価 <strong id="sellunit"></strong></div>
+        <div class="warn" id="warning"></div>
+      </section>
+      <section class="scenario upside">
+        <h3>05-B　上振れ売却価格</h3>
+        <div class="hint">相場が強ければ狙いたいチャレンジ価格</div>
+        <div class="row"><label for="sellhigh">売却想定</label><div class="edit"><input id="sellhigh" type="number" min="0" max="30000" step="50" value="6628">万円</div></div>
+        <input class="track" id="sellhigh-r" type="range" min="0" max="30000" step="100" value="6628">
+        <div class="scenario-metrics">
+          <div class="metric"><div class="key">利益額</div><div class="value" id="profithigh"></div></div>
+          <div class="metric"><div class="key">利益率</div><div class="value" id="marginhigh"></div></div>
+        </div>
+        <div class="foot">再販坪単価 <strong id="sellunithigh"></strong></div>
+        <div class="warn" id="warninghigh"></div>
+      </section>
+    </div>
+
+    <div class="detail">
+      <div class="line"><span>仕入れ</span><strong id="d-buy"></strong></div>
+      <div class="line"><span>仕入れ坪単価</span><strong id="buyunit"></strong></div>
+      <div class="line"><span>仕入れ仲介手数料</span><strong id="d-commission"></strong></div>
+      <div class="line"><span>その他諸費用</span><strong id="d-other"></strong></div>
+      <div class="line"><span>内装費</span><strong id="d-reno"></strong></div>
+      <div class="line"><span>総事業費</span><strong id="d-total"></strong></div>
+    </div>
+
+    <div class="actions">
+      <button id="print" type="button" class="main">A4 1枚で印刷 / PDF</button>
+      <button id="copy" type="button" class="sub">試算結果コピー</button>
+      <button id="share" type="button" class="sub">設定付きURL共有</button>
+      <button id="reset" type="button" class="sub">リセット</button>
+    </div>
+
+    <div class="notice">※利益率＝（各想定再販価格－総事業費）÷総事業費。仕入れ仲介手数料は原則（仕入れ価格×3％＋6万円）×1.1で概算。低額物件等の特例、直接仕入れは手動調整してください。その他諸費用には登記・取得税・保有費・再販時の販売費等を適宜加算してください。税引前の概算です。設定付きURLには物件名・号室・入力数値が含まれます。</div>
+    <div class="print-only">社内検討用｜印刷日：<span id="printdate"></span>｜物件：<span id="printprop"></span></div>
+  </div>
+</main>
+
+<script>
+(()=>{'use strict';
+  const $=id=>document.getElementById(id);
+  const TSUBO=3.305785;
+  const numIds=['buy','area','other','manual','unit','lightcost','target','sell','sellhigh'];
+  const textIds=['propname','room'];
+  const defaults={buy:4500,area:50,other:0,manual:0,unit:54.5,lightcost:200,target:10,sell:6028,sellhigh:6628,propname:'',room:''};
+  let mode='full';
+  const n=id=>Number($(id).value)||0;
+  const fmt=(x,d=1)=>Number.isFinite(x)?x.toLocaleString('ja-JP',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+  const yen=x=>fmt(x)+'万円';
+  function set(id,v){ if(!Number.isFinite(v)) return; $(id).value=+(v.toFixed(5)); const s=$(id+'-r'); if(s) s.value=v; }
+  function setText(id,v){ $(id).value=v ?? ''; }
+  function calc(){
+    const area=Math.max(0,n('area'));
+    const tsubo=area/TSUBO;
+    const buy=Math.max(0,n('buy'));
+    const other=Math.max(0,n('other'));
+    const commission=$('manualcheck').checked ? Math.max(0,n('manual')) : (buy*0.03+6)*1.1;
+    const reno=mode==='full' ? tsubo*Math.max(0,n('unit')) : Math.min(500,Math.max(0,n('lightcost')));
+    const total=buy+other+commission+reno;
+    const target=Math.max(0,n('target'));
+    const required=total*(1+target/100);
+    return {area,tsubo,buy,other,commission,reno,total,target,required};
+  }
+  function propLabel(){
+    const name=$('propname').value.trim();
+    const room=$('room').value.trim();
+    return [name,room].filter(Boolean).join(' ');
+  }
+  // 目標利益率の変更時は堅実売却価格を必要再販価格に合わせる。
+  // 上振れ価格は堅実価格との差額を維持して連動する。
+  function render(autoSell=true){
+    const c=calc();
+    if(autoSell){
+      const spread=Math.max(0,n('sellhigh')-n('sell'));
+      const base=Math.min(30000,Math.max(0,c.required));
+      set('sell',base);
+      set('sellhigh',Math.min(30000,base+spread));
+    }
+    const sell=Math.max(0,n('sell'));
+    const sellhigh=Math.max(0,n('sellhigh'));
+    const profit=sell-c.total;
+    const profithigh=sellhigh-c.total;
+    const margin=c.total>0 ? profit/c.total*100 : 0;
+    const marginhigh=c.total>0 ? profithigh/c.total*100 : 0;
+    $('tsubo').textContent=`${fmt(c.tsubo,2)}坪`;
+    $('commission').textContent=yen(c.commission);
+    $('reno').textContent=yen(c.reno);
+    $('total').textContent=yen(c.total);
+    $('required').textContent=yen(c.required);
+    $('required-note').textContent=`${yen(c.total)} × ${fmt(1+c.target/100,3)}（目標 ${fmt(c.target)}%）`;
+    $('profit').textContent=yen(profit);
+    $('margin').textContent=c.total>0?fmt(margin)+'％':'—';
+    $('profithigh').textContent=yen(profithigh);
+    $('marginhigh').textContent=c.total>0?fmt(marginhigh)+'％':'—';
+    $('sellunit').textContent=c.tsubo>0?fmt(sell/c.tsubo)+'万円/坪':'—';
+    $('sellunithigh').textContent=c.tsubo>0?fmt(sellhigh/c.tsubo)+'万円/坪':'—';
+    $('buyunit').textContent=c.tsubo>0?fmt(c.buy/c.tsubo)+'万円/坪':'—';
+    $('d-buy').textContent=yen(c.buy);
+    $('d-commission').textContent=yen(c.commission);
+    $('d-other').textContent=yen(c.other);
+    $('d-reno').textContent=yen(c.reno);
+    $('d-total').textContent=yen(c.total);
+    for(const [id,value] of [['profit',profit],['margin',profit],['profithigh',profithigh],['marginhigh',profithigh]]){
+      $(id).classList.toggle('red',value<0);
+      $(id).classList.toggle('green',value>=0);
+    }
+    $('warning').textContent=sell+0.01<c.required?'目標利益率に必要な価格を下回っています。':'';
+    $('warninghigh').textContent=sellhigh<sell?'堅実売却価格より低い設定です。':'';
+    $('printprop').textContent=propLabel()||'未入力';
+  }
+
+  for(const id of numIds){
+    const box=$(id), slider=$(id+'-r');
+    box.addEventListener('input',()=>{ if(slider) slider.value=box.value; render(id!=='sell'&&id!=='sellhigh'); });
+    if(slider) slider.addEventListener('input',()=>{ box.value=slider.value; render(id!=='sell'&&id!=='sellhigh'); });
+  }
+  for(const id of textIds){ $(id).addEventListener('input',()=>render(false)); }
+
+  function setMode(v,autoSell=true){
+    mode=v;
+    $('full').classList.toggle('active',v==='full');
+    $('light').classList.toggle('active',v==='light');
+    $('fullbox').classList.toggle('hide',v!=='full');
+    $('lightbox').classList.toggle('hide',v!=='light');
+    render(autoSell);
+  }
+  $('full').onclick=()=>setMode('full');
+  $('light').onclick=()=>setMode('light');
+  $('manualcheck').onchange=()=>{ $('manualbox').classList.toggle('hide',!$('manualcheck').checked); render(true); };
+
+  const q=new URLSearchParams(location.search);
+  let loaded=false;
+  if(q.toString()){
+    for(const id of numIds){ const raw=q.get(id); if(raw!==null&&raw!==''&&Number.isFinite(+raw)) set(id,+raw); }
+    for(const id of textIds){ const raw=q.get(id); if(raw!==null) setText(id,raw); }
+    $('manualcheck').checked=q.get('manualcheck')==='1';
+    $('manualbox').classList.toggle('hide',!$('manualcheck').checked);
+    setMode(q.get('mode')==='light'?'light':'full',!q.has('sell')&&!q.has('sellhigh'));
+    loaded=true;
+  }
+  if(!loaded) render(true);
+
+  $('reset').onclick=()=>{
+    for(const [id,v] of Object.entries(defaults)){
+      if(textIds.includes(id)) setText(id,v); else set(id,v);
+    }
+    $('manualcheck').checked=false;
+    $('manualbox').classList.add('hide');
+    setMode('full',true);
+  };
+  $('print').onclick=()=>window.print();
+  $('printdate').textContent=new Date().toLocaleDateString('ja-JP');
+
+  async function copyText(str,buttonId,original){
+    try{ await navigator.clipboard.writeText(str); }
+    catch(e){ const t=document.createElement('textarea'); t.value=str; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+    $(buttonId).textContent='コピーしました';
+    setTimeout(()=>$(buttonId).textContent=original,1600);
+  }
+
+  $('copy').onclick=()=>{
+    const c=calc(), sell=Math.max(0,n('sell')), sellhigh=Math.max(0,n('sellhigh'));
+    const lines=[
+      '【オークラヤ住宅｜買取再販 利益シミュレーター】',
+      `物件：${propLabel()||'未入力'}`,
+      `仕入れ価格：${yen(c.buy)}`,
+      `専有面積：${fmt(c.area)}㎡（${fmt(c.tsubo,2)}坪）`,
+      `仕入れ仲介手数料：${yen(c.commission)}`,
+      `その他諸費用：${yen(c.other)}`,
+      `内装：${mode==='full'?'フルリノベ':'軽内装'}`,
+      `内装費：${yen(c.reno)}`,
+      `総事業費：${yen(c.total)}`,
+      `目標利益率：${fmt(c.target)}%`,
+      `必要再販価格：${yen(c.required)}`,
+      `堅実売却価格：${yen(sell)}`,
+      `堅実利益額：${yen(sell-c.total)}`,
+      `堅実利益率：${c.total>0?fmt((sell-c.total)/c.total*100)+'%':'—'}`,
+      `堅実再販坪単価：${c.tsubo>0?fmt(sell/c.tsubo)+'万円/坪':'—'}`,
+      `上振れ売却価格：${yen(sellhigh)}`,
+      `上振れ利益額：${yen(sellhigh-c.total)}`,
+      `上振れ利益率：${c.total>0?fmt((sellhigh-c.total)/c.total*100)+'%':'—'}`,
+      `上振れ再販坪単価：${c.tsubo>0?fmt(sellhigh/c.tsubo)+'万円/坪':'—'}`
+    ];
+    copyText(lines.join('\n'),'copy','試算結果コピー');
+  };
+
+  $('share').onclick=()=>{
+    if(location.protocol==='file:'){ alert('公開したGitHub Pages上でご利用ください。'); return; }
+    const p=new URLSearchParams();
+    for(const id of numIds) p.set(id,$(id).value);
+    for(const id of textIds) p.set(id,$(id).value);
+    p.set('mode',mode);
+    p.set('manualcheck',$('manualcheck').checked?'1':'0');
+    copyText(location.origin+location.pathname+'?'+p.toString(),'share','設定付きURL共有');
+  };
+})();
+</script>
+</body>
+</html>
